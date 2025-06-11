@@ -1,0 +1,15 @@
+{
+  "name": "skinlab",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kristen Studioso",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.15.30"
+  }
+}
