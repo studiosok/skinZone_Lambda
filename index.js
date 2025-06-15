@@ -3,7 +3,9 @@ const jsonData = fs.readFileSync('./allergenList.json', 'utf8');
 
 export const handler = async (rawInput) => {
     let safe = false;
-    const input = normalizeInput(rawInput);
+    const parsedInput = JSON.parse(rawInput.body);
+
+    const input = normalizeInput(parsedInput.data);
     const sourceData = fetchSourceData();
     const result = searchData(sourceData, input);
 
@@ -62,13 +64,14 @@ const pickySearch = (data, input) => {
 
 
 const normalizeInput = (input) => {
-    const semiPattern = /[;]/gm;
     const lineBreakPattern = /\n/gm;
-    const tailPattern = /(\\"})/gm
+    const punctPattern = /[`!@#$%^&*-+=.?:"{}•;]/gm;
+    const nonAlphaNum = /[[:blank:]][[:^alnum:]][[:blank:]]/gm;
     const patternMatchedInput = input.toLowerCase()
-        .replaceAll(semiPattern, ',')
         .replaceAll(lineBreakPattern, '')
         .replaceAll('.', '')
+        .replaceAll(nonAlphaNum, ', ')
+        .replaceAll(punctPattern, ',')
         .split(', ');
     const finalInput = []
     for (const word of patternMatchedInput) {
@@ -85,9 +88,9 @@ const normalizeInput = (input) => {
             }
         }
         const currentWord = tempWord.join('')
-        const finalWord = currentWord.split(', ').replaceAll(tailPattern, '')
+        const finalWord = currentWord.split(', ')
         finalWord.forEach((word) => finalInput.push(word));
     }
-    
+
     return finalInput;
 }
